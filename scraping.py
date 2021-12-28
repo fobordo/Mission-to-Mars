@@ -8,6 +8,8 @@ import pandas as pd
 executable_path = {'executable_path': ChromeDriverManager().install()}
 browser = Browser('chrome', **executable_path, headless=False)
 
+### Mars News
+
 def mars_news(browser):
 
     #Scrape Mars News
@@ -39,42 +41,52 @@ def mars_news(browser):
 
     return news_title, news_p
 
-# ### Featured Images
+### Featured Images
 
-# Visit URL
-url = 'https://spaceimages-mars.com'
-browser.visit(url)
+def featured_image(browser):
 
-# Find and click the full image button
-full_image_elem = browser.find_by_tag('button')[1]
-full_image_elem.click()
+    # Visit URL
+    url = 'https://spaceimages-mars.com'
+    browser.visit(url)
 
-# Parse the resulting html with soup
-html = browser.html
-img_soup = soup(html, 'html.parser')
+    # Find and click the full image button
+    full_image_elem = browser.find_by_tag('button')[1]
+    full_image_elem.click()
 
-# Find the relative image url
-img_url_rel = img_soup.find('img', class_='fancybox-image').get('src')
-img_url_rel
+    # Parse the resulting html with soup
+    html = browser.html
+    img_soup = soup(html, 'html.parser')
 
-# Use the base URL to create an absolute URL
-img_url = f'https://spaceimages-mars.com/{img_url_rel}'
-img_url
+    # Add try/except for error handling
+    try:
+        # Find the relative image url
+        img_url_rel = img_soup.find('img', class_='fancybox-image').get('src')
+    
+    except AttributeError:
+        return None
 
-# Create a DataFrame from the first HTML table found
-df = pd.read_html('https://galaxyfacts-mars.com')[0]
+     # Use the base URL to create an absolute URL
+    img_url = f'https://spaceimages-mars.com/{img_url_rel}'
 
-# Assign columns to the new DataFrame
-df.columns=['description', 'Mars', 'Earth']
+    return img_url
 
-# Set the Description column as the DF's index in place without having to reassign the DF to a new variable
-df.set_index('description', inplace=True)
+### Mars Facts
 
-# Return the DF
-df
+def mars_facts():
 
-# Convert a DataFrame into an HTML table
-df.to_html()
+    # Add try/except for error handling
+    try:
+        # Use 'read_html' to scrape the facts table into a DataFrame
+        df = pd.read_html('https://galaxyfacts-mars.com')[0]
+    except BaseException:
+        return None
+
+    # Assign columns and set index of DataFrame
+    df.columns=['description', 'Mars', 'Earth']
+    df.set_index('description', inplace=True)
+
+    # Convert a DataFrame into HTML format, add bootstrap
+    return df.to_html()
 
 # End an automated browsing session
 browser.quit()
