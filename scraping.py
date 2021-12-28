@@ -8,32 +8,36 @@ import pandas as pd
 executable_path = {'executable_path': ChromeDriverManager().install()}
 browser = Browser('chrome', **executable_path, headless=False)
 
-# Visit the mars nasa news site
-url = 'https://redplanetscience.com'
-browser.visit(url)
+def mars_news(browser):
 
-# Optional delay for loading the page
-browser.is_element_present_by_css('div.list_text', wait_time=1)
+    #Scrape Mars News
 
-# Parse the HTML
+    # Visit the mars nasa news site
+    url = 'https://redplanetscience.com'
+    browser.visit(url)
 
-# Create an HTML object, assigned to the html variable	
-html = browser.html
+    # Optional delay for loading the page
+    browser.is_element_present_by_css('div.list_text', wait_time=1)
 
-# Use BeautifulSoup to parse the html object
-news_soup = soup(html, 'html.parser')
+    # Convert the browser html to a soup object and then quit the browser	
+    html = browser.html
+    news_soup = soup(html, 'html.parser')
 
-slide_elem = news_soup.select_one('div.list_text')
+    # Add try/except for error handling
+    try:
+        slide_elem = news_soup.select_one('div.list_text')
 
-slide_elem.find('div', class_='content_title')
+        # Use the parent element to find the first 'div' tag and save it as 'news_title'
+        news_title = slide_elem.find('div', class_='content_title').get_text()
 
-# Use the parent element to find the first 'div' tag and save it as 'news_title'
-news_title = slide_elem.find('div', class_='content_title').get_text()
-news_title
+        # Use the parent element to find the paragraph text
+        news_p = slide_elem.find('div', class_='article_teaser_body').get_text()
 
-# Use the parent element to find the paragraph text
-news_p = slide_elem.find('div', class_='article_teaser_body').get_text()
-news_p
+    # If there is an AttributeError, return nothing for the title and paragraph
+    except AttributeError:
+        return None, None
+
+    return news_title, news_p
 
 # ### Featured Images
 
