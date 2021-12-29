@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mission to Mars</title>
   <link 
     rel="stylesheet" 
@@ -11,9 +11,57 @@
   />
 </head>
 <body>
+  <!--Creates a container to hold all of the webpage components-->
   <div class="container">
+		<!--Tells Bootstrap to use Jumbotron styling to enhance the header, and centers all text within the Jumbotron-->
     <div class="jumbotron text-center">
+			<!--Adds the title, Mission to Mars, to the Jumbotron-->
       <h1>Mission to Mars</h1>
+
+      <!--Mars News-->
+      <!--Tells Bootstrap the grid system is about to be used and aligns everything within this div horizontally-->
+      <div class="row" id="mars-news">
+        <!--Specifies how many columns this component will be using (12, which is all of them)-->
+        <div class="col-md-12">
+          <!--Displays content as media-->
+          <div class="media">
+            <!--Media will be inserted within the body-->
+            <div class="media-body">
+              <!--Title for this section-->
+              <h2>Latest Mars News</h2>
+              <!--The name of the article scraped, which is held in the variable news_title in the mars Mongo document. Styles as a media heading-->
+              <h4 class="media-heading">{{mars.news_title}}</h4>
+              <!--The article summary paragraph text scraped, which is held in the variable news_paragraph in the mars Mongo document-->
+              <p>{{mars.news_paragraph}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--Mars Featured Image-->
+      <div class="row" id="mars-featured-image">
+        <!--Uses 8 columns in the row-->
+        <div class="col-md-8">
+          <!--Adds the title for this section-->
+          <h2>Featured Mars Image</h2>
+          <!--Inserts the featured image-->
+          <img 
+            src="{{mars.featured_image}}"
+            class="img-responsive"
+            alt="Responsive Image"
+          />
+        </div>
+        <!--Uses 4 columns in the row-->
+        <div class="col-md-4">
+          <div class="row" id="mars-facts">
+            <h4>Mars Facts</h4>
+            <!--References the facts table in the mars document, and tells the web browser that this code doesn't contain anything malicious -->
+            {{mars.facts | safe}}
+          </div>
+        </div>
+      </div>
+
+			<!--Adds the button for users to push to initiate a fresh scrape-->
       <p><a class="btn btn-primary btn-lg" href="/scrape"
                   role="button">Scrape New Data</a></p>
     </div>
